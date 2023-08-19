@@ -18,9 +18,9 @@ const provider = new ethers.providers.JsonRpcProvider("https://data-seed-prebsc-
 const cakeToken = "0x8d008B313C1d6C7fE2982F62d32Da7507cF43551";
 const routerAddress = "0x427bF5b37357632377eCbEC9de3626C71A5396c1";
 
-const swapAddress = "0x9a489505a00cE272eAa5e07Dba6491314CaE3796";
+const swapAddress = "0x9Ac64Cc6e4415144C455BD8E4837Fea55603e5c3";
 
-const bnbtokenaddr = "0x320016Df590B6e78f0813564E115FcDb066DAf01"; //BNB BSC Testnet Address
+//const bnbtokenaddr = "0x320016Df590B6e78f0813564E115FcDb066DAf01"; //BNB BSC Testnet Address
 
 //ABI for Transfer event from CAKE contract
 const abi1 = [
@@ -34,7 +34,7 @@ const abi2 = [
 
 const abi3=[
     
-    "function swapExactTokensForTokens(uint amountIn,uint amountOutMin,address[] calldata path,address to  ) external payable returns (uint  amountOut)",
+    "function swapExactETHForTokens(uint amountOutMin, address[] calldata path, address to, uint deadline) external payable returns (uint[] memory amounts);",
 ];
 
 
@@ -66,15 +66,15 @@ const init = async () => {
         );
 
         if(liquidityEvent){
-            var path: string[] = new Array(2);
-            path[0]= bnbtokenaddr;
+            var path: string[] = new Array(1);
+            path[0]= swapAddress;
             path[1]=cakeToken;
 
-            const swap = await swapContract.swapExactTokensForTokens (
-                ethers.utils.parseEther("0.01"), //0.01tBNB
+            const swap = await swapContract.swapExactETHForTokens (
                 0,
                 path,
                 signer.getAddress(),
+                blockNumber + 100,
                 {value: ethers.utils.parseEther("0.01")} //since it's a payable function
             );
 
